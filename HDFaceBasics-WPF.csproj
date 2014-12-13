@@ -58,6 +58,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bespoke.Common">
+      <HintPath>..\..\Kinect\OSC\OscFramework_2.0\Executables\Framework\x64\Bespoke.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Bespoke.Common.Osc">
+      <HintPath>..\..\Kinect\OSC\OscFramework_2.0\Executables\Framework\x64\Bespoke.Common.Osc.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Kinect">
       <HintPath>$(KINECTSDK20_DIR)Assemblies\Microsoft.Kinect.dll</HintPath>
     </Reference>

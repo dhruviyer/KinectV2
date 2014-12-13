@@ -13,6 +13,8 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
     using System.Windows.Media.Media3D;
     using Microsoft.Kinect;
     using Microsoft.Kinect.Face;
+    using Bespoke.Common.Osc;
+    using System.Net;
 
     /// <summary>
     /// Main Window
@@ -81,12 +83,42 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         private string statusText = "Ready To Start Capture";
 
         /// <summary>
+        /// These are for entering the keyboard commands
+        /// </summary>
+        IPEndPoint glovepie;
+        IPEndPoint myapp;
+        OscMessage msg;
+
+        /// <summary>
+        /// THese are float variabls for the various AUs
+        /// </summary>
+        float jawopen;
+        float leftEyeClosed;
+        float leftLipPull;
+        float leftCheekPuff;
+        float rightEyeClosed;
+        float rightCheekPuff;
+        float rightLipPull;
+        float kiss;
+
+        /// <summary>
+        /// Sets the command to send to the glovepie sketch
+        /// </summary>
+        int commandToSend;
+
+        /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();
             this.DataContext = this;
+
+            //establish protocol for using glovepie to enter commands
+            OscPacket.LittleEndianByteOrder = false;
+            myapp = new IPEndPoint(IPAddress.Loopback, 1944);
+            glovepie = new IPEndPoint(IPAddress.Loopback, 1945);
+
         }
 
         /// <summary>
@@ -396,7 +428,19 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                 var vert = vertices[i];
                 this.theGeometry.Positions[i] = new Point3D(vert.X, vert.Y, -vert.Z);
             }
-            
+
+            //set the AU float with the updated values
+            jawopen = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.JawOpen];
+            leftCheekPuff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LeftcheekPuff];
+            rightCheekPuff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RightcheekPuff];
+            leftLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerLeft];
+            rightLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerRight];
+            rightEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RighteyeClosed];
+            leftEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyeClosed];
+
+            //test the values
+
+
         }
 
         /// <summary>
@@ -560,6 +604,173 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             newStatus += ", " + GetCollectionStatusText(collectionStatus);
 
             this.CurrentBuilderStatus = newStatus;
+        }
+
+        public void sendCommand(int commandtoSend)
+        {
+            switch (commandtoSend)
+            {
+                case 0:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 1:
+                    msg = new OscMessage(myapp, "/move/w", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 2:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 3:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 4:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 5:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 6:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 7:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 10.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 0.0f);
+                    msg.Send(glovepie);
+                    break;
+                case 8:
+                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/a", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/d", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/lc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/middle", 10.0f);
+                    msg.Send(glovepie);
+                    break;
+            }
         }
     }
 }
