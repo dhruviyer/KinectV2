@@ -150,7 +150,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the current tracked user id
         /// </summary>
@@ -437,10 +437,32 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             rightLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerRight];
             rightEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RighteyeClosed];
             leftEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyeClosed];
+            kiss = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipPucker];
 
             //test the values
+            //outputBlock.Text = ("Jaw: " + jawopen + "\n left cheek: " + leftCheekPuff+"\n left lip pull: " + leftLipPull);
+            outputBlock.Text = (leftEyeClosed.ToString());
+            if (jawopen > 0.4)
+                commandToSend = 1;
+            else if (leftLipPull > 0.75 && rightCheekPuff < 0.75)
+                commandToSend = 2;
+            else if (rightLipPull > 0.75 && leftCheekPuff < 0.75)
+                commandToSend = 4;
+            else if (leftLipPull < 0.75 && rightCheekPuff > 0.75)
+                commandToSend = 7;
+            else if (rightLipPull < 0.75 && leftCheekPuff > 0.75)
+                commandToSend = 8;
+            else if (kiss > 0.75)
+                commandToSend = 3;
+            else if (rightEyeClosed < 0.7 && leftEyeClosed > 0.7)
+                commandToSend = 5;
+            else if (leftEyeClosed < 0.7 && rightEyeClosed > 0.7)
+                commandToSend = 6;
+            else
+                commandToSend = 0;
 
 
+            sendCommand(commandToSend);
         }
 
         /// <summary>
@@ -494,7 +516,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                 this.highDefinitionFaceFrameSource.TrackingId = this.CurrentTrackingId;
             }
         }
-        
+
         /// <summary>
         /// This event is fired when a tracking is lost for a body tracked by HDFace Tracker
         /// </summary>
