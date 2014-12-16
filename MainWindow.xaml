@@ -28,7 +28,7 @@
             <Image Grid.Column="1" Source="Images\Status.png" Stretch="None" HorizontalAlignment="Center" Margin="0 0 0 5"/>
         </DockPanel>
 
-        <Viewport3D  Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" x:Name="viewport3d" RenderTransformOrigin="0.5,0.5" >
+        <Viewport3D  Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" x:Name="viewport3d" RenderTransformOrigin="0.5,0.5" Margin="0,39,0,0" >
             <Viewport3D.RenderTransform>
                 <ScaleTransform ScaleX="1.0" ScaleY="1.0"></ScaleTransform>
             </Viewport3D.RenderTransform>
@@ -91,6 +91,10 @@
                 </ModelVisual3D>
             </Viewport3D.Children>
         </Viewport3D>
-        <TextBlock HorizontalAlignment="Left" Margin="0,10,0,0" Grid.Row="3" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="194" Width="82" Name="outputBlock"/>
+        <TextBox HorizontalAlignment="Left" Height="24" Margin="121,10,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Row="3" Name="Input" TextAlignment="Center"/>
+        <Label Content="Command to log: " HorizontalAlignment="Left" Margin="10,83,0,0" VerticalAlignment="Top" Grid.RowSpan="4"/>
+        <Button Content="Log Command" HorizontalAlignment="Left" Margin="174,11,0,0" Grid.Row="3" VerticalAlignment="Top" Width="99" Name="log"/>
+        <RadioButton Content="Training Mode" HorizontalAlignment="Left" Margin="300,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" IsChecked="True" Name="training"/>
+        <RadioButton Content="Input Mode" HorizontalAlignment="Left" Margin="410,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" Name="input"/>
     </Grid>
 </Window>
