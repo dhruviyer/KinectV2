@@ -16,19 +16,24 @@
     </Window.Resources>
 
     <Grid Name="layoutGrid" Margin="10 0 10 10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260*"/>
+            <ColumnDefinition Width="111*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="4.5"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" Margin="0 0 0 20">
+        <DockPanel Grid.Row="0" Margin="0,0,0,15.5" Grid.ColumnSpan="2">
             <Image DockPanel.Dock="Left" Source="Images\Logo.png" Stretch="Fill" Height="32" Width="81" Margin="0 10 0 5"/>
             <TextBlock DockPanel.Dock="Right" Margin="0 0 -1 0"  VerticalAlignment="Bottom" Foreground="{StaticResource MediumGreyBrush}" FontFamily="Segoe UI" FontSize="18">HDFaceTracking UI</TextBlock>
             <Image Grid.Column="1" Source="Images\Status.png" Stretch="None" HorizontalAlignment="Center" Margin="0 0 0 5"/>
         </DockPanel>
 
-        <Viewport3D  Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" x:Name="viewport3d" RenderTransformOrigin="0.5,0.5" Margin="0,39,0,0" >
+        <Viewport3D  Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" x:Name="viewport3d" RenderTransformOrigin="0.5,0.5" Margin="0,39,0,0" Grid.ColumnSpan="2" Grid.RowSpan="2" >
             <Viewport3D.RenderTransform>
                 <ScaleTransform ScaleX="1.0" ScaleY="1.0"></ScaleTransform>
             </Viewport3D.RenderTransform>
@@ -91,10 +96,12 @@
                 </ModelVisual3D>
             </Viewport3D.Children>
         </Viewport3D>
-        <TextBox HorizontalAlignment="Left" Height="24" Margin="121,10,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Row="3" Name="Input" TextAlignment="Center"/>
-        <Label Content="Command to log: " HorizontalAlignment="Left" Margin="10,83,0,0" VerticalAlignment="Top" Grid.RowSpan="4"/>
-        <Button Content="Log Command" HorizontalAlignment="Left" Margin="174,11,0,0" Grid.Row="3" VerticalAlignment="Top" Width="99" Name="log"/>
-        <RadioButton Content="Training Mode" HorizontalAlignment="Left" Margin="300,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" IsChecked="True" Name="training"/>
-        <RadioButton Content="Input Mode" HorizontalAlignment="Left" Margin="410,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" Name="input"/>
+        <TextBox HorizontalAlignment="Left" Height="24" Margin="121,10,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Row="3" Name="Input" TextAlignment="Center" Grid.RowSpan="2"/>
+        <Label Content="Command to log: " HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Grid.Row="3" Grid.RowSpan="2" Name="command"/>
+        <Button Content="Log Command" HorizontalAlignment="Left" Margin="174,9,0,0" Grid.Row="3" VerticalAlignment="Top" Width="99" Name="log" Grid.RowSpan="2" Click="logData"/>
+        <RadioButton Content="Training Mode" HorizontalAlignment="Left" Margin="300,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" IsChecked="True" Name="training" Grid.RowSpan="2"/>
+        <RadioButton Content="Input Mode" HorizontalAlignment="Left" Margin="410,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" Name="input" Grid.RowSpan="2"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="75,10,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Grid.Row="4" Height="24" Width="122" Name="Status"/>
+        <Label Content="Status:" HorizontalAlignment="Left" Margin="519,6,0,0" Grid.Row="4" VerticalAlignment="Top" Width="71" RenderTransformOrigin="0.211,0" Grid.ColumnSpan="2" Height="27"/>
     </Grid>
 </Window>

@@ -112,6 +112,11 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         bool trainingmode = true;
 
         /// <summary>
+        /// keeps track of how many data points you have logged during training
+        /// </summary>
+        int logCounter = 1;
+
+        /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
         public MainWindow()
@@ -442,8 +447,19 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             rightLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerRight];
             rightEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RighteyeClosed];
             leftEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyeClosed];
-            kiss = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipPucker]; 
-            
+            kiss = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipPucker];
+
+            //set training mode or input mode
+            if (training.IsChecked == true)
+                trainingmode = true;
+            else
+                trainingmode = false;
+
+            if (trainingmode == false)
+            {
+                Status.Text = "Ready";
+
+            }
         }
 
         /// <summary>
@@ -773,6 +789,54 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     msg = new OscMessage(myapp, "/move/middle", 10.0f);
                     msg.Send(glovepie);
                     break;
+            }
+        }
+
+        private void logData(object sender, RoutedEventArgs e)
+        {
+            //if training mode, we want to write the data to a file
+            if (trainingmode == true)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Development and Optimization\Kinect V2\Inputs.txt", true))
+                {
+                    file.WriteLine(jawopen + ", " + leftCheekPuff + ", " + rightCheekPuff + ", " + leftLipPull + ", " + rightLipPull + ", " + rightEyeClosed + ", " + leftEyeClosed + ", " + kiss);
+                    Status.Text = ("Total Points logged: " + logCounter);
+                    logCounter++;
+                    
+                }
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Development and Optimization\Kinect V2\Targets.txt", true))
+                {
+                    switch (Int32.Parse(Input.Text.ToString()))
+                    {
+                        case 0:
+                            file.WriteLine("1 0 0 0 0 0 0 0 0");
+                            break;
+                        case 1:
+                            file.WriteLine("0 1 0 0 0 0 0 0 0");
+                            break;
+                        case 2:
+                            file.WriteLine("0 0 1 0 0 0 0 0 0");
+                            break;
+                        case 3:
+                            file.WriteLine("0 0 0 1 0 0 0 0 0");
+                            break;
+                        case 4:
+                            file.WriteLine("0 0 0 0 1 0 0 0 0");
+                            break;
+                        case 5:
+                            file.WriteLine("0 0 0 0 0 1 0 0 0");
+                            break;
+                        case 6:
+                            file.WriteLine("0 0 0 0 0 0 1 0 0");
+                            break;
+                        case 7:
+                            file.WriteLine("0 0 0 0 0 0 0 1 0");
+                            break;
+                        case 8:
+                            file.WriteLine("0 0 0 0 0 0 0 0 1");
+                            break;
+                    }
+                }
             }
         }
     }
