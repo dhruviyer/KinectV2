@@ -15,6 +15,8 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
     using Microsoft.Kinect.Face;
     using Bespoke.Common.Osc;
     using System.Net;
+    using System.Collections.Generic;
+
 
     /// <summary>
     /// Main Window
@@ -115,6 +117,31 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         /// keeps track of how many data points you have logged during training
         /// </summary>
         int logCounter = 1;
+
+        /// <summary>
+        /// Stores the result of the matlab neural network as a ong string
+        /// </summary>
+        string result;
+
+        /// <summary>
+        /// A list containing only numerical strings from the matlab nn result
+        /// </summary>
+        List<String> numbersOnly;
+
+        /// <summary>
+        /// The matrix containing the input data
+        /// </summary>
+        float[] inputarray;
+
+        /// <summary>
+        /// Used to determine which command should be selected
+        /// </summary>
+        int commandCounter = 0;
+
+        /// <summary>
+        /// The instance of Matlab used in this code
+        /// </summary>
+        MLApp.MLApp matlab;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -457,8 +484,60 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
 
             if (trainingmode == false)
             {
-                Status.Text = "Ready";
+                //Initialize lists for output amd input
+                numbersOnly = new List<string>();
+                inputarray = new float[8];
 
+                //fill the input matrix
+                inputarray[0] = jawopen;
+                inputarray[1] = leftCheekPuff;
+                inputarray[2] = rightCheekPuff;
+                inputarray[3] = leftLipPull;
+                inputarray[4] = rightLipPull;
+                inputarray[5] = rightEyeClosed;
+                inputarray[6] = leftEyeClosed;
+                inputarray[7] = kiss;
+
+                //initialize matlab
+                matlab = new MLApp.MLApp();
+
+                //Put data into the matlab workspace
+                matlab.PutWorkspaceData("input", "base", inputarray);
+
+                
+                //execute the function by first transposing the input matrix and then executing the nn. Store the data in a string
+                result = (matlab.Execute("kinectv2NN(transpose(input))"));
+
+                //go through the 'result' string and split it into different words. Remove all blank spaces. 
+                char[] delimiters = new char[] { };
+                string[] parts = result.Split(delimiters,
+                         StringSplitOptions.RemoveEmptyEntries);
+
+                //go through each word from the 'parts' list and extract the numbers
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    if (parts[i].Equals("ans")) { } //ignore words if it equals 'ans'
+                    else if (parts[i].Equals("=")) { } //ignore words that are '='
+                    else { numbersOnly.Add(parts[i]); } //add the word to a new list if it is a number
+                }
+
+                //dtermine which command to send
+                foreach (string str in numbersOnly)
+                {
+                    float x = float.Parse(str);
+                    x += 0.5f;
+                    if ((int)x == 0)
+                    {
+                        commandCounter++; //don't send this command
+                    }
+                    else
+                    {
+                        commandToSend = commandCounter;
+                        Status.Text = ("Input: " + commandToSend); //Later I'll put in the send command, for now just show it in the GUI
+                    }
+                }
+                commandCounter = 0; //reset command counter for next run
+                
             }
         }
 
@@ -802,7 +881,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     file.WriteLine(jawopen + ", " + leftCheekPuff + ", " + rightCheekPuff + ", " + leftLipPull + ", " + rightLipPull + ", " + rightEyeClosed + ", " + leftEyeClosed + ", " + kiss);
                     Status.Text = ("Total Points logged: " + logCounter);
                     logCounter++;
-                    
+
                 }
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Development and Optimization\Kinect V2\Targets.txt", true))
                 {
