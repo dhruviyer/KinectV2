@@ -95,13 +95,11 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         /// THese are float variabls for the various AUs
         /// </summary>
         float jawopen;
-        float leftEyeClosed;
         float leftLipPull;
         float leftCheekPuff;
-        float rightEyeClosed;
         float rightCheekPuff;
         float rightLipPull;
-        float kiss;
+        float brow;
 
         /// <summary>
         /// Sets the command to send to the glovepie sketch
@@ -472,9 +470,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             rightCheekPuff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RightcheekPuff];
             leftLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerLeft];
             rightLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerRight];
-            rightEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RighteyeClosed];
-            leftEyeClosed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyeClosed];
-            kiss = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipPucker];
+            brow = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyebrowLowerer];
 
             //set training mode or input mode
             if (training.IsChecked == true)
@@ -482,11 +478,14 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             else
                 trainingmode = false;
 
+            if (trainingmode == true)
+                Status.Text = this.currentFaceAlignment.FaceOrientation.X.ToString();
+
             if (trainingmode == false)
             {
                 //Initialize lists for output amd input
                 numbersOnly = new List<string>();
-                inputarray = new float[8];
+                inputarray = new float[6];
 
                 //fill the input matrix
                 inputarray[0] = jawopen;
@@ -494,9 +493,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                 inputarray[2] = rightCheekPuff;
                 inputarray[3] = leftLipPull;
                 inputarray[4] = rightLipPull;
-                inputarray[5] = rightEyeClosed;
-                inputarray[6] = leftEyeClosed;
-                inputarray[7] = kiss;
+                inputarray[5] = brow;
 
                 //initialize matlab
                 matlab = new MLApp.MLApp();
@@ -534,6 +531,17 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     {
                         commandToSend = commandCounter;
                         Status.Text = ("Input: " + commandToSend); //Later I'll put in the send command, for now just show it in the GUI
+                        if (commandToSend == 3)
+                        {
+                            commandToSend = 0;
+                        }
+                        if (this.currentFaceAlignment.FaceOrientation.X > 0.2)
+                        {
+                            commandToSend = 3;
+                        }
+                            sendCommand(commandToSend);
+                        
+                        
                     }
                 }
                 commandCounter = 0; //reset command counter for next run
@@ -723,6 +731,8 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/middle", 0.0f);
                     msg.Send(glovepie);
+                    msg = new OscMessage(myapp, "/move/space", 0.0f);
+                    msg.Send(glovepie);
                     break;
                 case 1:
                     msg = new OscMessage(myapp, "/move/w", 10.0f);
@@ -878,7 +888,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             {
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Development and Optimization\Kinect V2\Inputs.txt", true))
                 {
-                    file.WriteLine(jawopen + ", " + leftCheekPuff + ", " + rightCheekPuff + ", " + leftLipPull + ", " + rightLipPull + ", " + rightEyeClosed + ", " + leftEyeClosed + ", " + kiss);
+                    file.WriteLine(jawopen + ", " + leftCheekPuff + ", " + rightCheekPuff + ", " + leftLipPull + ", " + rightLipPull + ", " + brow);
                     Status.Text = ("Total Points logged: " + logCounter);
                     logCounter++;
 
