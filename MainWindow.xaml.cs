@@ -530,7 +530,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     else
                     {
                         commandToSend = commandCounter;
-                        Status.Text = ("Input: " + commandToSend); //Later I'll put in the send command, for now just show it in the GUI
+                       
                         if (commandToSend == 3)
                         {
                             commandToSend = 0;
@@ -540,7 +540,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                             commandToSend = 3;
                         }
                             sendCommand(commandToSend);
-                        
+                            Status.Text = ("Input: " + commandToSend); //Later I'll put in the send command, for now just show it in the GUI
                         
                     }
                 }
@@ -843,7 +843,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     msg.Send(glovepie);
                     break;
                 case 7:
-                    msg = new OscMessage(myapp, "/move/w", 0.0f);
+                    msg = new OscMessage(myapp, "/move/w", 10.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/a", 0.0f);
                     msg.Send(glovepie);
