@@ -829,13 +829,13 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/a", 0.0f);
                     msg.Send(glovepie);
-                    msg = new OscMessage(myapp, "/move/s", 0.0f);
+                    msg = new OscMessage(myapp, "/move/s", 10.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/d", 0.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/lc", 0.0f);
                     msg.Send(glovepie);
-                    msg = new OscMessage(myapp, "/move/rc", 10.0f);
+                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/space", 0.0f);
                     msg.Send(glovepie);
