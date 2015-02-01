@@ -142,6 +142,11 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         MLApp.MLApp matlab;
 
         /// <summary>
+        /// Value used for identifying patient's max head rotating ability for command ID 3
+        /// </summary>
+        double maxHeadRot = 0.0;
+
+        /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
         public MainWindow()
@@ -474,79 +479,92 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
 
             //set training mode or input mode
             if (training.IsChecked == true)
+            {
                 trainingmode = true;
+               // Status.Text = "Training mode ON";
+            }
             else
+            {
                 trainingmode = false;
-
+                Status.Text = "Training mode OFF";
+            }
             if (trainingmode == true)
-                Status.Text = this.currentFaceAlignment.FaceOrientation.X.ToString();
+            {
+                if (this.currentFaceAlignment.FaceOrientation.X > maxHeadRot)
+                {
+                    maxHeadRot = this.currentFaceAlignment.FaceOrientation.X;
+                }
+                Status.Text = "Current: " + (Math.Round(this.currentFaceAlignment.FaceOrientation.X, 3)).ToString() + "\nMax: "+(Math.Round(maxHeadRot, 3)).ToString();
+            }
 
             if (trainingmode == false)
-            {
-                //Initialize lists for output amd input
-                numbersOnly = new List<string>();
-                inputarray = new float[6];
-
-                //fill the input matrix
-                inputarray[0] = jawopen;
-                inputarray[1] = leftCheekPuff;
-                inputarray[2] = rightCheekPuff;
-                inputarray[3] = leftLipPull;
-                inputarray[4] = rightLipPull;
-                inputarray[5] = brow;
-
-                //initialize matlab
-                matlab = new MLApp.MLApp();
-
-                //Put data into the matlab workspace
-                matlab.PutWorkspaceData("input", "base", inputarray);
-
-                
-                //execute the function by first transposing the input matrix and then executing the nn. Store the data in a string
-                result = (matlab.Execute("kinectv2NN(transpose(input))"));
-
-                //go through the 'result' string and split it into different words. Remove all blank spaces. 
-                char[] delimiters = new char[] { };
-                string[] parts = result.Split(delimiters,
-                         StringSplitOptions.RemoveEmptyEntries);
-
-                //go through each word from the 'parts' list and extract the numbers
-                for (int i = 0; i < parts.Length; i++)
                 {
-                    if (parts[i].Equals("ans")) { } //ignore words if it equals 'ans'
-                    else if (parts[i].Equals("=")) { } //ignore words that are '='
-                    else { numbersOnly.Add(parts[i]); } //add the word to a new list if it is a number
-                }
 
-                //dtermine which command to send
-                foreach (string str in numbersOnly)
-                {
-                    float x = float.Parse(str);
-                    x += 0.5f;
-                    if ((int)x == 0)
+                    //Initialize lists for output amd input
+                    numbersOnly = new List<string>();
+                    inputarray = new float[6];
+
+                    //fill the input matrix
+                    inputarray[0] = jawopen;
+                    inputarray[1] = leftCheekPuff;
+                    inputarray[2] = rightCheekPuff;
+                    inputarray[3] = leftLipPull;
+                    inputarray[4] = rightLipPull;
+                    inputarray[5] = brow;
+
+                    //initialize matlab
+                    matlab = new MLApp.MLApp();
+                    //Status.Text = ("Matlab ON");
+                    //Put data into the matlab workspace
+                    matlab.PutWorkspaceData("input", "base", inputarray);
+
+
+                    //execute the function by first transposing the input matrix and then executing the nn. Store the data in a string
+                    result = (matlab.Execute("kinectv2NN(transpose(input))"));
+                    //result = (matlab.Execute("balaNN(transpose(input))"));
+
+                    //go through the 'result' string and split it into different words. Remove all blank spaces. 
+                    char[] delimiters = new char[] { };
+                    string[] parts = result.Split(delimiters,
+                             StringSplitOptions.RemoveEmptyEntries);
+
+                    //go through each word from the 'parts' list and extract the numbers
+                    for (int i = 0; i < parts.Length; i++)
                     {
-                        commandCounter++; //don't send this command
+                        if (parts[i].Equals("ans")) { } //ignore words if it equals 'ans'
+                        else if (parts[i].Equals("=")) { } //ignore words that are '='
+                        else { numbersOnly.Add(parts[i]); } //add the word to a new list if it is a number
                     }
-                    else
+
+                    //dtermine which command to send
+                    foreach (string str in numbersOnly)
                     {
-                        commandToSend = commandCounter;
-                       
-                        if (commandToSend == 3)
+                        float x = float.Parse(str);
+                        x += 0.5f;
+                        if ((int)x == 0)
                         {
-                            commandToSend = 0;
+                            commandCounter++; //don't send this command
                         }
-                        if (this.currentFaceAlignment.FaceOrientation.X > 0.2)
+                        else
                         {
-                            commandToSend = 3;
-                        }
+                            commandToSend = commandCounter;
+
+                            if (commandToSend == 3)
+                            {
+                                commandToSend = 0;
+                            }
+                            if (this.currentFaceAlignment.FaceOrientation.X > float.Parse(HeadRotationValue.Text.ToString()))
+                            {
+                                commandToSend = 3;
+                            }
                             sendCommand(commandToSend);
                             Status.Text = ("Input: " + commandToSend); //Later I'll put in the send command, for now just show it in the GUI
-                        
+
+                        }
                     }
+                    commandCounter = 0; //reset command counter for next run
+
                 }
-                commandCounter = 0; //reset command counter for next run
-                
-            }
         }
 
         /// <summary>
@@ -829,13 +847,13 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/a", 0.0f);
                     msg.Send(glovepie);
-                    msg = new OscMessage(myapp, "/move/s", 10.0f);
+                    msg = new OscMessage(myapp, "/move/s", 0.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/d", 0.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/lc", 0.0f);
                     msg.Send(glovepie);
-                    msg = new OscMessage(myapp, "/move/rc", 0.0f);
+                    msg = new OscMessage(myapp, "/move/rc", 10.0f);
                     msg.Send(glovepie);
                     msg = new OscMessage(myapp, "/move/space", 0.0f);
                     msg.Send(glovepie);
