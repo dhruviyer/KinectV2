@@ -520,8 +520,9 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
 
 
                     //execute the function by first transposing the input matrix and then executing the nn. Store the data in a string
-                    result = (matlab.Execute("kinectv2NN(transpose(input))"));
-                    //result = (matlab.Execute("balaNN(transpose(input))"));
+                    //below is a series of nn "profiles" uncomment the correct one
+                    //result = (matlab.Execute("kinectv2NN(transpose(input))"));
+                    result = (matlab.Execute("balaNN(transpose(input))"));
 
                     //go through the 'result' string and split it into different words. Remove all blank spaces. 
                     char[] delimiters = new char[] { };
