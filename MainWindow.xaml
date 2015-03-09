@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Microsoft.Samples.Kinect.HDFaceBasics"
         Title="HDFace Basics"
-        Height="735" Width="807.5" Loaded="Window_Loaded" 
+        Height="735" Width="867.5" Loaded="Window_Loaded" 
         >
 
     <Window.Resources>
@@ -96,13 +96,14 @@
                 </ModelVisual3D>
             </Viewport3D.Children>
         </Viewport3D>
-        <TextBox HorizontalAlignment="Left" Height="24" Margin="121,10,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Row="3" Name="Input" TextAlignment="Center" Grid.RowSpan="2"/>
-        <Label Content="Command to log: " HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Grid.Row="3" Grid.RowSpan="2" Name="command"/>
-        <Button Content="Log Command" HorizontalAlignment="Left" Margin="174,9,0,0" Grid.Row="3" VerticalAlignment="Top" Width="99" Name="log" Grid.RowSpan="2" Click="logData"/>
-        <RadioButton Content="Training Mode" HorizontalAlignment="Left" Margin="300,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" IsChecked="True" Name="training" Grid.RowSpan="2"/>
-        <RadioButton Content="Input Mode" HorizontalAlignment="Left" Margin="410,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" Name="input" Grid.RowSpan="2"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="25,10,0,0" TextWrapping="Wrap" Text="Ready" VerticalAlignment="Top" Grid.Row="4" Height="45" Width="92" Name="Status"/>
-        <Label Content="Status:" HorizontalAlignment="Left" Margin="519,6,0,0" Grid.Row="4" VerticalAlignment="Top" Width="71" RenderTransformOrigin="0.211,0" Grid.ColumnSpan="2" Height="27"/>
-        <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="122,10,0,0" Grid.Row="4" TextWrapping="Wrap" Text="Head Rot. Val." VerticalAlignment="Top" Width="101" Name="HeadRotationValue"/>
+        <TextBox HorizontalAlignment="Left" Height="24" Margin="39,6,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Row="3" Name="Input" TextAlignment="Center" Grid.RowSpan="2" RenderTransformOrigin="-3.05,-0.062"/>
+        <Label Content="ID:" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Grid.Row="3" Grid.RowSpan="2" Name="command"/>
+        <Button Content="Log" HorizontalAlignment="Left" Margin="91,7,0,0" Grid.Row="3" VerticalAlignment="Top" Width="99" Name="log" Grid.RowSpan="2" Click="logData"/>
+        <RadioButton Content="Train" HorizontalAlignment="Left" Margin="244,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" IsChecked="True" Name="training" Grid.RowSpan="2"/>
+        <RadioButton Content="Input" HorizontalAlignment="Left" Margin="339,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" Name="input" Grid.RowSpan="2"/>
+        <TextBlock Grid.Column="1" Margin="5,10,154,565" TextWrapping="Wrap" Text="Ready" Grid.Row="2" Name="Status" Grid.RowSpan="3"/>
+        <Label Content="Status:" HorizontalAlignment="Left" Margin="541,5,0,0" Grid.Row="4" VerticalAlignment="Top" Width="71" RenderTransformOrigin="0.211,0" Height="27" Grid.ColumnSpan="2"/>
+        <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="141,11,0,0" Grid.Row="4" TextWrapping="Wrap" Text="Head Rot. Val." VerticalAlignment="Top" Width="100" Name="HeadRotationValue"/>
+        <RadioButton Content="Discover" HorizontalAlignment="Left" Margin="430,12,0,0" Grid.Row="3" VerticalAlignment="Top" GroupName="rgroup1" Name="discover" Grid.RowSpan="2"/>
     </Grid>
 </Window>

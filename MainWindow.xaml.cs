@@ -92,14 +92,26 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         OscMessage msg;
 
         /// <summary>
-        /// THese are float variabls for the various AUs
+        /// These are float variabls for the various AUs
         /// </summary>
-        float jawopen;
-        float leftLipPull;
-        float leftCheekPuff;
-        float rightCheekPuff;
-        float rightLipPull;
-        float brow;
+        float jaw_open;
+        float jaw_slide_right;
+        float left_cheek_puff;
+        float left_eyebrow_lowerer;
+        float left_eye_closed;
+        float lip_corner_depressor_left;
+        float lip_corner_depressor_right;
+        float lip_corner_puller_left;
+        float lip_corner_puller_right;
+        float lip_pucker;
+        float lip_stretcher_left;
+        float lip_stretcher_right;
+        float lower_lip_depressor_left;
+        float lower_lip_depressor_right;
+        float right_cheek_puff;
+        float right_eyebrow_lowerer;
+        float right_eye_closed;
+        
 
         /// <summary>
         /// Sets the command to send to the glovepie sketch
@@ -110,12 +122,14 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         /// is true if the device is in training mdoe
         /// </summary>
         bool trainingmode = true;
+        bool inputmode = false;
+        bool discovermode = false;
 
         /// <summary>
         /// keeps track of how many data points you have logged during training
         /// </summary>
-        int logCounter = 1;
-
+        int training_log_counter = 1;
+        int discover_log_counter = 1;
         /// <summary>
         /// Stores the result of the matlab neural network as a ong string
         /// </summary>
@@ -459,7 +473,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
         /// <summary>
         /// Sends the new deformed mesh to be drawn
         /// </summary>
-        private void UpdateMesh()
+        private void UpdateMesh() //This is where the bulk of my code is
         {
             var vertices = this.currentFaceModel.CalculateVerticesForAlignment(this.currentFaceAlignment);
 
@@ -470,23 +484,42 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             }
 
             //set the AU float with the updated values
-            jawopen = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.JawOpen];
-            leftCheekPuff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LeftcheekPuff];
-            rightCheekPuff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RightcheekPuff];
-            leftLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerLeft];
-            rightLipPull = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerRight];
-            brow = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyebrowLowerer];
-
+            jaw_open = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.JawOpen];
+            jaw_slide_right = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.JawSlideRight];
+            left_cheek_puff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LeftcheekPuff];
+            left_eyebrow_lowerer = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyebrowLowerer];
+            left_eye_closed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LefteyeClosed];
+            lip_corner_depressor_left = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerDepressorLeft];
+            lip_corner_depressor_right = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerDepressorRight];
+            lip_corner_puller_left = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerLeft];
+            lip_corner_puller_right = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipCornerPullerRight];
+            lip_pucker = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipPucker];
+            lip_stretcher_left = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipStretcherLeft];
+            lip_stretcher_right = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LipStretcherRight];
+            lower_lip_depressor_left = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LowerlipDepressorLeft];
+            lower_lip_depressor_right = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.LowerlipDepressorRight];
+            right_cheek_puff = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RightcheekPuff];
+            right_eyebrow_lowerer = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RighteyebrowLowerer];
+            right_eye_closed = this.currentFaceAlignment.AnimationUnits[FaceShapeAnimations.RighteyeClosed];
+            
             //set training mode or input mode
             if (training.IsChecked == true)
             {
                 trainingmode = true;
-               // Status.Text = "Training mode ON";
+                discovermode = false;
+                inputmode = false;
+            }
+            else if(input.IsChecked == true)
+            {
+                trainingmode = false;
+                inputmode = true;
+                discovermode = false;
             }
             else
             {
                 trainingmode = false;
-                Status.Text = "Training mode OFF";
+                inputmode = false;
+                discovermode = true;
             }
             if (trainingmode == true)
             {
@@ -496,21 +529,21 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                 }
                 Status.Text = "Current: " + (Math.Round(this.currentFaceAlignment.FaceOrientation.X, 3)).ToString() + "\nMax: "+(Math.Round(maxHeadRot, 3)).ToString();
             }
-
-            if (trainingmode == false)
+         
+            if (inputmode == true)
                 {
 
                     //Initialize lists for output amd input
                     numbersOnly = new List<string>();
                     inputarray = new float[6];
 
-                    //fill the input matrix
-                    inputarray[0] = jawopen;
-                    inputarray[1] = leftCheekPuff;
-                    inputarray[2] = rightCheekPuff;
-                    inputarray[3] = leftLipPull;
-                    inputarray[4] = rightLipPull;
-                    inputarray[5] = brow;
+                    //fill the input matrix with the same values you trained the nn with
+                    inputarray[0] = jaw_open;
+                    inputarray[1] = left_cheek_puff;
+                    inputarray[2] = right_cheek_puff;
+                    inputarray[3] = lip_corner_puller_left;
+                    inputarray[4] = lip_corner_puller_right;
+                    inputarray[5] = left_eyebrow_lowerer;
 
                     //initialize matlab
                     matlab = new MLApp.MLApp();
@@ -521,8 +554,8 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
 
                     //execute the function by first transposing the input matrix and then executing the nn. Store the data in a string
                     //below is a series of nn "profiles" uncomment the correct one
-                    //result = (matlab.Execute("kinectv2NN(transpose(input))"));
-                    result = (matlab.Execute("balaNN(transpose(input))"));
+                    result = (matlab.Execute("kinectv2NN(transpose(input))"));
+                    //result = (matlab.Execute("balaNN(transpose(input))"));
 
                     //go through the 'result' string and split it into different words. Remove all blank spaces. 
                     char[] delimiters = new char[] { };
@@ -549,7 +582,7 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
                         else
                         {
                             commandToSend = commandCounter;
-
+                            
                             if (commandToSend == 3)
                             {
                                 commandToSend = 0;
@@ -900,16 +933,25 @@ namespace Microsoft.Samples.Kinect.HDFaceBasics
             }
         }
 
-        private void logData(object sender, RoutedEventArgs e)
+        private void logData(object sender, RoutedEventArgs e) //for writing data to a file
         {
-            //if training mode, we want to write the data to a file
-            if (trainingmode == true)
+            if (discovermode == true)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Testing\Animation Units.txt", true))
+                {
+                    file.WriteLine(Input.Text.ToString() + " " + jaw_open + " " + jaw_slide_right + " " + left_cheek_puff + " " + left_eyebrow_lowerer + " " + left_eye_closed + " " + lip_corner_depressor_left + " " + lip_corner_depressor_right + " " + lip_corner_puller_left + " " + lip_corner_puller_right + " " + lip_pucker + " " + lip_stretcher_left + " " + lip_stretcher_right + " " + lower_lip_depressor_left + " " + lower_lip_depressor_right + " " + right_cheek_puff + " " + right_eyebrow_lowerer + " " + right_eye_closed);
+                    Status.Text = ("Total Points logged: " + discover_log_counter);
+                    discover_log_counter++;
+                }
+            }
+            
+            else if (trainingmode == true)
             {
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Development and Optimization\Kinect V2\Inputs.txt", true))
                 {
-                    file.WriteLine(jawopen + ", " + leftCheekPuff + ", " + rightCheekPuff + ", " + leftLipPull + ", " + rightLipPull + ", " + brow);
-                    Status.Text = ("Total Points logged: " + logCounter);
-                    logCounter++;
+                    file.WriteLine(jaw_open + ", " + left_cheek_puff + ", " + right_cheek_puff + ", " + lip_corner_puller_left + ", " + lip_corner_puller_right + ", " + left_eyebrow_lowerer);
+                    Status.Text = ("Total Points logged: " + training_log_counter);
+                    training_log_counter++;
 
                 }
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Bala\Desktop\Sophomore\Science Fair\Development and Optimization\Kinect V2\Targets.txt", true))
